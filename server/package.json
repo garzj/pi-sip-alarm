@@ -1,0 +1,32 @@
+{
+  "name": "pi-sip-alarm-server",
+  "private": true,
+  "main": "./src/index.ts",
+  "scripts": {
+    "dev": "export NODE_ENV=development || set NODE_ENV=development&& npx ts-node-dev --respawn --poll --exit-child --no-deps -C ttypescript ./src/index.ts",
+    "build": "ttsc -p .",
+    "start": "node ./build/server/src/index.js",
+    "deploy": "npm run build && npm start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.2",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "get-port": "^5.1.1",
+    "onoff": "^6.0.3",
+    "socket.io": "^4.1.3",
+    "text2wav": "^0.0.13",
+    "tiny-typed-emitter": "^2.1.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^15.6.0",
+    "@types/uuid": "^8.3.1",
+    "@zerollup/ts-transform-paths": "^1.7.18",
+    "ts-node-dev": "^1.1.8",
+    "ttypescript": "^1.5.12",
+    "typescript": "^4.2.4"
+  }
+}

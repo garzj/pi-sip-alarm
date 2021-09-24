@@ -1,0 +1,104 @@
+/* Header */
+.app > header::after {
+  content: ' ';
+  display: block;
+  margin: 0 auto;
+  width: calc(100% - 50px);
+  border-bottom: 1px solid #ccc;
+}
+
+.app > header > h1 {
+  text-align: center;
+  margin: 25px 0;
+}
+
+/* Layout */
+.app {
+  display: flex;
+  flex-direction: column;
+}
+
+.app,
+.app > main {
+  height: 100%;
+  overflow: hidden;
+}
+
+.app > main {
+  flex-grow: 1;
+  display: flex;
+}
+
+.app > main > * {
+  width: 200px;
+  overflow-x: hidden;
+  padding: 40px;
+
+  position: relative;
+}
+.app > main > *::after {
+  content: ' ';
+  position: absolute;
+  right: 0;
+  top: 25px;
+  height: calc(100% - 50px);
+  border-right: 1px solid #ccc;
+}
+
+.app > main > .big-tab {
+  flex-grow: 1;
+}
+
+/* Tabs */
+.action-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.action-bar > button {
+  margin-bottom: 15px;
+}
+
+.flag-container {
+  position: absolute;
+  pointer-events: none;
+  left: calc(-1rem - 20px);
+  top: 0;
+  height: calc(1rem + 20px); /* Same as button height */
+  width: calc(1rem + 20px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.flag-container > * {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+}
+
+.dirty-flag {
+  background: black;
+}
+
+/* Nav */
+nav > ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+nav > ul > li {
+  padding-bottom: 20px;
+}
+nav > ul > li > a {
+  display: block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+
+  max-width: 100%;
+}
+
+.nav-link-active {
+  color: #a000ff;
+}

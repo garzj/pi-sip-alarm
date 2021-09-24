@@ -1,0 +1,22 @@
+{
+  "name": "pi-sip-alarm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Raspberry PI Service configurable to call and alarm people, when certain pins on the PI are activated",
+  "author": "Johannes Garz <jojogarz123@gmail.com> (https://www.garz.tech/)",
+  "license": "UNLICENSED",
+  "scripts": {
+    "install-all": "npm i && cd client && npm i && cd ../server && npm i",
+    "dev": "concurrently -k \"cd client && npm start\" \"cd server && npm run dev\"",
+    "build": "cd pjcall && make && cd ../client && npm run build && cd ../server && npm run build",
+    "start": "cd server && npm start",
+    "deploy": "npm run build && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^6.2.0"
+  },
+  "dependencies": {
+    "fast-deep-equal": "^3.1.3",
+    "zod": "^3.2.0"
+  }
+}

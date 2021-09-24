@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "rootDir": "..",
+    "outDir": "build",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "target": "es2015",
+    "lib": ["es6"],
+    "types": ["node"],
+    "typeRoots": ["node_modules/@types"],
+    "resolveJsonModule": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "plugins": [
+      {
+        "transform": "@zerollup/ts-transform-paths",
+        "exclude": ["*"]
+      }
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@shared/*": ["../shared/*"]
+    }
+  },
+  "include": ["./src/**/*", "../shared/**/*"],
+  "exclude": ["node_modules", "build"]
+}

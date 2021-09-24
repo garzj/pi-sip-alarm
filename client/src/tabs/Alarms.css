@@ -1,0 +1,13 @@
+.alarm-name.-active {
+  color: #a000ff;
+}
+
+.alarm-name-add {
+  display: block;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.process-container {
+  display: inline-block;
+}
