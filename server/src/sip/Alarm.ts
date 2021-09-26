@@ -28,7 +28,10 @@ export class Alarm {
     this.audioGenerator = this.genAudios();
 
     try {
-      this.input = new Gpio(this.config.gpio, 'in', 'both');
+      // Watch and debounce gpio pin
+      this.input = new Gpio(this.config.gpio, 'in', 'both', {
+        debounceTimeout: 100,
+      });
     } catch (err) {
       if (process.env.NODE_ENV === 'production') {
         console.log(err);
@@ -38,8 +41,6 @@ export class Alarm {
         this.onGpioChange(HIGH);
       }
     }
-
-    // TODO: Debounce GPIO?
 
     this.input?.watch((err, value) => {
       if (err) {
