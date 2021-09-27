@@ -37,7 +37,7 @@ export class Alarm {
         console.log(err);
         console.error(`Failed to watch GPIO ${this.config.gpio}.`);
       } else {
-        // Always run active alarms in devlopment
+        // Always run active alarms in development
         this.onGpioChange(HIGH);
       }
     }
