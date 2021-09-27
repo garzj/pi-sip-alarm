@@ -208,15 +208,7 @@ export class PjcallRunner {
     this.output = '';
 
     // Spawn pjcall
-    this.proc = spawn(
-      'stdbuf', // Unbuffer stdout
-      [
-        '-oL', // Buffer whole lines
-        '-eL',
-        pjcallBinPath,
-      ],
-      { stdio: ['pipe', 'pipe', 'pipe'] }
-    );
+    this.proc = spawn(pjcallBinPath, { stdio: ['pipe', 'pipe', 'pipe'] });
 
     // Attach to output
     if (!this.proc.stdout || !this.proc.stderr || !this.proc.stdin) {
