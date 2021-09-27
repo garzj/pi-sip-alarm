@@ -12,21 +12,14 @@ Raspberry PI Service configurable to call and alarm people, when certain pins on
   ```
 
 - Get the [docker-compose.yml](./docker-compose.yml) file from this repo
-- `docker-compose up -d`
+- Start the app: `docker-compose pull && docker-compose up -d`
+- Stop it: `docker-compose down`
 
 ## Build manually
 
-### Prerequisites
-
-- CMake  
+- Install CMake  
   `apt-get install build-essentials`
-- [Pjsua](https://www.pjsip.org/)
-- [NodeJS + npm](https://nodejs.org/en/)
-
-### Build the app
-
-`npm run build`
-
-### Start the app
-
-`npm start`
+- Install [Pjsua](https://www.pjsip.org/)
+- Install [NodeJS + npm](https://nodejs.org/en/)
+- Build the app: `npm run build`
+- Start the app: `npm start`
