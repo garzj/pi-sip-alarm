@@ -20,8 +20,8 @@ type NewCall = {
 type Call = Omit<NewCall, 'initCb'> & { callId: number };
 
 export class PjcallRunner {
-  static maxRestarts: number = 5;
-  restarted: number = 0;
+  static maxRestarts = 5;
+  restarted = 0;
 
   private registered = false;
 
@@ -34,6 +34,8 @@ export class PjcallRunner {
   private calls: {
     [callId: number]: Call;
   } = {};
+
+  private output = '';
 
   private unexpectedExitHandler: (() => void) | null = null;
   private nodeExitHandler: (() => void) | null;
@@ -105,6 +107,10 @@ export class PjcallRunner {
   }
 
   onLine(line: string) {
+    if (line !== '') {
+      this.output += line + '\n';
+    }
+
     const parts = line.split(' ');
 
     if (parts.length <= 0) return;
@@ -198,6 +204,9 @@ export class PjcallRunner {
   }
 
   private run() {
+    // Clear output
+    this.output = '';
+
     // Spawn pjcall
     this.proc = spawn(
       'stdbuf', // Unbuffer stdout
@@ -218,17 +227,19 @@ export class PjcallRunner {
 
     // Handle unexpected exits -> restart
     this.unexpectedExitHandler = () => {
-      const baseErr = 'The pjsua process closed unexpectedly.';
+      console.error(
+        `${this.output}The pjcall process closed unexpectedly. There is likely additional output above.`
+      );
 
       if (this.restarted >= PjcallRunner.maxRestarts) {
         return console.error(
-          `${baseErr} Already reached a maximum of ${PjcallRunner.maxRestarts} restarts. Terminating...`
+          `Already reached a maximum of ${PjcallRunner.maxRestarts} restarts. Terminating...`
         );
       }
 
       this.restarted++;
       console.error(
-        `${baseErr} Restarting... (${this.restarted}/${PjcallRunner.maxRestarts})`
+        `Restarting... (${this.restarted}/${PjcallRunner.maxRestarts})`
       );
 
       this.run();
