@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "install-all": "npm i && cd client && npm i && cd ../server && npm i",
-    "dev": "concurrently -k \"cd client && npm start\" \"cd server && npm run dev\"",
+    "dev": "cd pjcall && make && cd .. && concurrently -k \"cd client && npm start\" \"cd server && npm run dev\"",
     "build": "cd pjcall && make && cd ../client && npm run build && cd ../server && npm run build",
     "start": "cd server && npm start",
     "deploy": "npm run build && npm start"
