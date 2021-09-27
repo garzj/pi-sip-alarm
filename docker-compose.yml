@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  app:
+    container_name: pi-sip-alarm
+    image: garzj/pi-sip-alarm
+    build: .
+    ports:
+      - 8080:5000
+    volumes:
+      - ./data:/app/server/data
+    devices:
+      - /dev:/dev
