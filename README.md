@@ -4,21 +4,25 @@ Raspberry PI Service configurable to call and alarm people, when certain pins on
 
 ## Run inside Docker
 
-- Install [Docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/)
+- Install [Docker](https://www.docker.com/)  
+  `curl -s -L https://get.docker.com | sudo sh`
+- Start the app  
+  `sudo docker run --rm -it -v "$pwd/data:/app/server/data" -p 8080:5000 --privileged --name pi-sip-alarm garzj/pi-sip-alarm`
+- Stop the app:  
+  `sudo docker stop pi-sip-alarm`
 
-  ```
-  curl -s -L https://get.docker.com | sudo sh
-  sudo apt-get install docker-compose
-  ```
+## Run with docker-compose
 
+- Install [docker-compose](https://docs.docker.com/compose/install/): `sudo apt install -y docker-compose`
 - Get the [docker-compose.yml](./docker-compose.yml) file from this repo
-- Start the app: `docker-compose pull && docker-compose up -d`
-- Stop it: `docker-compose down`
+- Pull the image: `sudo docker-compose pull`
+- Start the app: `sudo docker-compose up -d`
+- Stop the app: `sudo docker-compose down`
 
 ## Build manually
 
 - Install CMake  
-  `apt-get install build-essentials`
+  `sudo apt install -y build-essentials`
 - Install [Pjsua](https://www.pjsip.org/)
 - Install [NodeJS + npm](https://nodejs.org/en/)
 - Build the app: `npm run build`

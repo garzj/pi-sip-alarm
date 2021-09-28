@@ -9,5 +9,4 @@ services:
       - 8080:5000
     volumes:
       - ./data:/app/server/data
-    devices:
-      - /dev:/dev
+    privileged: true
