@@ -33,13 +33,12 @@ export class Alarm {
         debounceTimeout: 100,
       });
     } catch (err) {
-      if (process.env.NODE_ENV === 'production') {
-        console.log(err);
-        console.error(`Failed to watch GPIO ${this.config.gpio}.`);
-      } else {
-        // Always run active alarms in development
-        this.onGpioChange(HIGH);
-      }
+      // Always run active alarms when there's no gpio
+      console.log(err);
+      console.error(
+        `Failed to watch GPIO ${this.config.gpio}. Running alarm instantly...`
+      );
+      this.onGpioChange(HIGH);
     }
 
     this.input?.watch((err, value) => {
