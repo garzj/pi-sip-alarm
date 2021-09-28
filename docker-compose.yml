@@ -6,7 +6,7 @@ services:
     image: garzj/pi-sip-alarm
     build: .
     ports:
-      - 8080:5000
+      - 80:5000
     volumes:
       - ./data:/app/server/data
     privileged: true
