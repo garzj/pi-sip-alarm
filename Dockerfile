@@ -1,5 +1,7 @@
+# This image was downgraded to alpine3.12 due to https://github.com/dperson/openvpn-client/issues/365, when building on a Raspberry PI
+
 # BUILDER
-FROM node:lts-alpine3.14 AS builder
+FROM node:lts-alpine3.12 AS builder
 
 WORKDIR /build/
 
@@ -31,7 +33,7 @@ RUN cd server && npm run build
 
 
 # PROD ENV
-FROM node:lts-alpine3.14
+FROM node:lts-alpine3.12
 
 # Runtime deps
 RUN apk add --update libc6-compat libuuid pjproject-dev
