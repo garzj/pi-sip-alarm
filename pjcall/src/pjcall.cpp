@@ -51,7 +51,7 @@ void on_reg_state(pjsua_acc_id);
 void on_call_state(pjsua_call_id, pjsip_event *);
 void on_incoming_call(pjsua_acc_id, pjsua_call_id, pjsip_rx_data *);
 void on_call_media_state(pjsua_call_id);
-void on_media_finished(pjmedia_port *, void *);
+pj_status_t on_media_finished(pjmedia_port *, void *);
 
 // Prototype helpers
 void pjsua_setup();
@@ -367,7 +367,7 @@ void play_audio(pjsua_call *call)
 	}
 
 	// Register media finished callback
-	status = pjmedia_wav_player_set_eof_cb2(call->play_port, NULL, &on_media_finished);
+	status = pjmedia_wav_player_set_eof_cb(call->play_port, NULL, &on_media_finished);
 	if (status != PJ_SUCCESS)
 	{
 		cout << "CALL_ERR_AUDIO " << call->call_id << " " << status << endl;
@@ -375,7 +375,7 @@ void play_audio(pjsua_call *call)
 	}
 }
 
-void on_media_finished(pjmedia_port *play_port, void *user_data)
+pj_status_t on_media_finished(pjmedia_port *play_port, void *user_data)
 {
 	PJ_UNUSED_ARG(play_port);
 	PJ_UNUSED_ARG(user_data);
@@ -395,6 +395,8 @@ void on_media_finished(pjmedia_port *play_port, void *user_data)
 		// Hangup call
 		pjsua_call_hangup(call->call_id, 200, NULL, NULL);
 	}
+
+	return PJ_SUCCESS;
 }
 
 void destroy_player(pjsua_call *call)
