@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import socketIOClient from 'socket.io-client';
 
-const socket = socketIOClient(`ws://${window.location.host}`, {
+const secure = window.location.protocol.includes('https');
+const wsProtocol = `ws${secure ? 's' : ''}`;
+const socket = socketIOClient(`${wsProtocol}://${window.location.host}`, {
   path: '/api',
   transports: ['websocket'],
   closeOnBeforeunload: false,
