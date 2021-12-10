@@ -130,13 +130,13 @@ export class PjcallRunner {
     if (event.startsWith('APP_ERR')) {
       console.error(`Pjcall app error: ${line}`);
     } else if (event.startsWith('CMD_')) {
-      event = event.substr(4, event.length);
+      event = event.slice(4);
 
       if (event.startsWith('ERR')) {
         console.error(`Pjcall command error: ${line}`);
       }
     } else if (event.startsWith('REG_')) {
-      event = event.substr(4, event.length);
+      event = event.slice(4);
 
       if (event.startsWith('ERR')) {
         const reg = this.regStack.shift();
@@ -148,7 +148,7 @@ export class PjcallRunner {
         reg?.cb?.(null);
       }
     } else if (event.startsWith('CALL_')) {
-      event = event.substr(5, event.length);
+      event = event.slice(5);
 
       if (event.startsWith('STATE_CALLING')) {
         const newCall = this.callStack.shift();

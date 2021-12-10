@@ -24,7 +24,7 @@ export const provideAlarmsApi: ProvideAPI = (io) => {
       configFile.alarms[id] = {
         gpio: 0,
         active: false,
-        name: `new #${id.substr(0, 8)}`,
+        name: `new #${id.substring(0, 8)}`,
         process: [],
       };
       configFile.update();
