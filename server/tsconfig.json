@@ -12,12 +12,7 @@
     "noImplicitAny": true,
     "strict": true,
     "noFallthroughCasesInSwitch": true,
-    "plugins": [
-      {
-        "transform": "@zerollup/ts-transform-paths",
-        "exclude": ["*"]
-      }
-    ],
+    "plugins": [{ "transform": "ts-transform-paths" }],
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
