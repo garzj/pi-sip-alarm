@@ -3,7 +3,7 @@
   "private": true,
   "main": "./src/index.ts",
   "scripts": {
-    "dev": "export NODE_ENV=development || set NODE_ENV=development&& npx ts-node-dev --respawn --poll --exit-child --no-deps -C ttypescript ./src/index.ts",
+    "dev": "export NODE_ENV=development || set NODE_ENV=development&& npx ts-node-dev --respawn --rs  --poll --exit-child --no-deps -C ttypescript ./src/index.ts",
     "build": "ttsc -p .",
     "start": "node ./build/server/src/index.js",
     "deploy": "npm run build && npm start",
