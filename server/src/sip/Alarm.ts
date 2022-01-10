@@ -214,7 +214,7 @@ export class Alarm {
         (err, callId) => {
           this.lastCallSuccess = !err;
 
-          callId !== null && this.callIds.delete(callId);
+          callId !== undefined && this.callIds.delete(callId);
 
           return setCallResult(
             item,

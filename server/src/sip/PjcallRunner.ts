@@ -1,6 +1,7 @@
 import { ChildProcess, spawn } from 'child_process';
 import { SipData } from '@shared/schema/config-file';
 import { pjcallBinPath } from '@/config/paths';
+import { pjcallEvents, PjcallEvents } from './pjcallEvents';
 
 export type CallData = {
   phone: string;
@@ -9,40 +10,48 @@ export type CallData = {
 };
 
 type RegCallback = (err: string | null) => void;
+type CmdReg = {
+  type: 'registration';
+  cb?: RegCallback;
+};
 
-type CallCallback = (err: string | null, callId: number | null) => void;
+type CallCallback = (err: string | null, callId?: number) => void;
 type CallInitCallback = (call: Call) => void;
-type NewCall = {
+export type Call = Omit<CmdCall, 'type' | 'initCb'> & { callId: number };
+type CmdCall = {
+  type: 'call';
   callData: CallData;
   cb?: CallCallback;
   initCb?: CallInitCallback;
 };
-type Call = Omit<NewCall, 'initCb'> & { callId: number };
+
+type CmdData = CmdReg | CmdCall;
 
 export class PjcallRunner {
   static maxRestarts = 5;
   restarted = 0;
 
-  private registered = false;
-
   proc: ChildProcess | null = null;
 
-  private sip: SipData | null = null;
+  cmdQueue: CmdData[] = [];
 
-  private regStack: { cb?: RegCallback }[] = [];
-  private callStack: NewCall[] = [];
-  private calls: {
+  sip: SipData | null = null;
+  registered = false;
+
+  calls: {
     [callId: number]: Call;
   } = {};
 
   private output = '';
-
-  private unexpectedExitHandler: (() => void) | null = null;
+  private pjcallExitHandler: (() => void) | null = null;
   private nodeExitHandler: (() => void) | null;
 
   constructor() {
-    this.run();
+    // Kill on node exit
     this.nodeExitHandler = () => this.destroy();
+    process.on('exit', this.nodeExitHandler);
+
+    this.run();
   }
 
   getUserAddress() {
@@ -64,7 +73,13 @@ export class PjcallRunner {
 
     this.proc.stdin.write(`r ${sip.proxy} ${sip.user} ${sip.password}\n`);
 
-    this.regStack.push({ cb });
+    this.cmdQueue.push({ type: 'registration', cb });
+  }
+
+  shiftReg(): CmdReg | undefined {
+    const regIdx = this.cmdQueue.findIndex((c) => c.type === 'registration');
+    const reg = <CmdReg>this.cmdQueue.splice(regIdx, 1)[0];
+    return reg;
   }
 
   call(callData: CallData, cb: CallCallback, initCb?: CallInitCallback) {
@@ -72,8 +87,7 @@ export class PjcallRunner {
       return cb?.(
         `Failed to call ${this.getCallAddress(
           callData
-        )}. No input stream to write to.`,
-        null
+        )}. No input stream to write to.`
       );
     }
 
@@ -81,8 +95,7 @@ export class PjcallRunner {
       return cb?.(
         `Failed to call ${this.getCallAddress(
           callData
-        )}. A registration has to be made first.`,
-        null
+        )}. A registration has to be made first.`
       );
     }
 
@@ -90,7 +103,15 @@ export class PjcallRunner {
       `c ${this.sip.proxy} ${callData.phone} ${callData.audioFile} ${callData.playTimes}\n`
     );
 
-    this.callStack.push({ callData, cb, initCb });
+    this.cmdQueue.push({ type: 'call', callData, cb, initCb });
+  }
+
+  getCallById(callIdStr: string | undefined): Call | null {
+    if (callIdStr === undefined) return null;
+    const callId = parseInt(callIdStr);
+    if (!Number.isInteger(callId)) return null;
+    if (!Object.prototype.hasOwnProperty.call(this.calls, callId)) return null;
+    return this.calls[callId];
   }
 
   hangup(callId: number) {
@@ -111,96 +132,29 @@ export class PjcallRunner {
       this.output += line + '\n';
     }
 
-    const parts = line.split(' ');
+    let args = line.split(' ');
 
-    if (parts.length <= 0) return;
-    let event = parts[0];
+    if (args.length <= 0) return;
+    let event = args[0];
+    args = args.slice(1);
 
-    const getCallById = (arg: string | undefined): Call | null => {
-      const callId = parseInt(parts[1]);
-      if (
-        !Number.isInteger(callId) ||
-        !Object.prototype.hasOwnProperty.call(this.calls, callId)
-      ) {
-        return null;
+    const callEvent = (
+      events: PjcallEvents,
+      path: string[],
+      line: string,
+      args: string[]
+    ) => {
+      const eventName = path.shift();
+      if (eventName === undefined || !Object.keys(events).includes(eventName))
+        return;
+      const event = events[eventName];
+      if (typeof event === 'function') {
+        event.bind(this)(line, args);
+      } else {
+        callEvent(event, path, line, args);
       }
-      return this.calls[callId];
     };
-
-    if (event.startsWith('APP_ERR')) {
-      console.error(`Pjcall app error: ${line}`);
-    } else if (event.startsWith('CMD_')) {
-      event = event.slice(4);
-
-      if (event.startsWith('ERR')) {
-        console.error(`Pjcall command error: ${line}`);
-      }
-    } else if (event.startsWith('REG_')) {
-      event = event.slice(4);
-
-      if (event.startsWith('ERR')) {
-        const reg = this.regStack.shift();
-        this.registered = false;
-        reg?.cb?.(`Failed to register as ${this.getUserAddress()}: ${line}`);
-      } else if (event.startsWith('STATE_REGISTERED')) {
-        const reg = this.regStack.shift();
-        this.registered = true;
-        reg?.cb?.(null);
-      }
-    } else if (event.startsWith('CALL_')) {
-      event = event.slice(5);
-
-      if (event.startsWith('STATE_CALLING')) {
-        const newCall = this.callStack.shift();
-        if (!newCall) return;
-
-        const callId = parseInt(parts[1]);
-        if (!Number.isInteger(callId)) {
-          return newCall.cb?.(
-            `Error while calling ${callId}: Could not receive pjsua call id.`,
-            null
-          );
-        }
-
-        const call: Call = { ...newCall, callId };
-        this.calls[callId] = call;
-        newCall.initCb?.(call);
-      } else if (event.startsWith('ERR')) {
-        const call = getCallById(parts[1]);
-        if (!call) return;
-
-        const callAddress = this.getCallAddress(call.callData);
-        call.cb?.(`Error while calling ${callAddress}: ${line}`, call.callId);
-      } else if (event.startsWith('STATE_CONFIRMED')) {
-        // Could return to process, when confirmed
-        // const call = getCallById(parts[1]);
-        // if (!call) return;
-        // call.cb?.(null);
-      } else if (event.startsWith('STATE_DECLINED')) {
-        const call = getCallById(parts[1]);
-        if (!call) return;
-
-        if (!this.registered) {
-          return call.cb?.(
-            `Call to ${this.getCallAddress(
-              call.callData
-            )} failed due to an registration error.`,
-            call.callId
-          );
-        }
-
-        call.cb?.(
-          `Call to ${this.getCallAddress(call.callData)} was declined.`,
-          call.callId
-        );
-      } else if (event.startsWith('STATE_HANGUP')) {
-        // Return to process after hangup
-        const call = getCallById(parts[1]);
-        if (!call) return;
-
-        call.cb?.(null, call.callId);
-      }
-    }
+    callEvent(pjcallEvents, event.split('_'), line, args);
   }
 
   private run() {
@@ -218,12 +172,13 @@ export class PjcallRunner {
     this.proc.stderr.on('data', (data) => this.onData(`${data}`));
 
     // Handle unexpected exits -> restart
-    this.unexpectedExitHandler = () => {
+    this.pjcallExitHandler = () => {
       console.error(
         `${this.output}The pjcall process closed unexpectedly. There is likely additional output above.`
       );
 
       if (this.restarted >= PjcallRunner.maxRestarts) {
+        this.terminate();
         return console.error(
           `Already reached a maximum of ${PjcallRunner.maxRestarts} restarts. Terminating...`
         );
@@ -233,20 +188,21 @@ export class PjcallRunner {
       console.error(
         `Restarting... (${this.restarted}/${PjcallRunner.maxRestarts})`
       );
-
       this.run();
     };
-    this.proc.on('exit', this.unexpectedExitHandler);
-
-    // Kill on node exit
-    process.on('exit', this.destroy.bind(this));
+    this.proc.on('exit', this.pjcallExitHandler);
   }
 
   terminate() {
+    let cmd: CmdData | undefined;
+    while ((cmd = this.cmdQueue.shift())) {
+      cmd.cb?.(`Pjcall has been terminated.`);
+    }
+
     if (this.proc) {
-      if (this.unexpectedExitHandler) {
-        this.proc.removeListener('exit', this.unexpectedExitHandler);
-        this.unexpectedExitHandler = null;
+      if (this.pjcallExitHandler) {
+        this.proc.removeListener('exit', this.pjcallExitHandler);
+        this.pjcallExitHandler = null;
       }
 
       this.proc.kill('SIGTERM');
