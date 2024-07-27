@@ -1,7 +1,5 @@
-# This image was downgraded to alpine3.12 due to https://github.com/dperson/openvpn-client/issues/365, when building on a Raspberry PI
-
 # BUILDER
-FROM node:lts-alpine3.12 AS builder
+FROM node:lts-alpine3.20 AS builder
 
 WORKDIR /build/
 
@@ -9,19 +7,17 @@ WORKDIR /build/
 RUN apk add --update python3 py3-pip alpine-sdk linux-headers pjproject-dev
 
 # Node deps
-COPY client/package*.json ./client/
-RUN cd client && npm ci
-COPY server/package*.json ./server/
-RUN cd server && npm ci
-COPY package*.json ./
-RUN npm ci
+COPY client/package.json ./client/
+COPY server/package.json ./server/
+COPY package.json ./
+RUN yarn install --frozen-lockfile
 
 # Shared code
 COPY ./shared/ ./shared/
 
 # Build client
 COPY ./client/ ./client/
-RUN cd client && npm run build
+RUN cd client && yarn build
 
 # Build pjcall
 COPY ./pjcall ./pjcall
@@ -29,37 +25,38 @@ RUN cd pjcall && make
 
 # Build server
 COPY ./server/ ./server/
-RUN cd server && npm run build
+RUN cd server && yarn build
 
 
 # PROD ENV
-FROM node:lts-alpine3.12
+FROM node:lts-alpine3.20
 
 # Runtime deps
 RUN apk add --update libc6-compat libuuid pjproject-dev
 
 WORKDIR /app/
 
+COPY package.json yarn.lock ./
+
 # Server deps
-COPY ./server/package*.json ./server/
+COPY server/package.json yarn.lock ./server/
 RUN apk add --virtual .build-deps python3 py3-pip alpine-sdk \
   && cd server \
-  && npm ci --prod \
+  && yarn install --prod --frozen-lockfile \
   && apk del .build-deps
 
-# Shared deps
-COPY package*.json ./
-RUN npm ci --only=prod
+# Shared files
+COPY --from=builder /build/build/shared/ ./build/shared/
 
 # Static client files
-COPY --from=builder /build/client/build/ ./client/build/
+COPY --from=builder /build/build/client/ ./build/client/
 
 # Pjcall binary
 COPY --from=builder /build/pjcall/pjcall ./pjcall/
 
 # Server files
-COPY --from=builder /build/server/build/ ./server/build/
+COPY --from=builder /build/build/server/ ./build/server/
 
 # Start the server
 EXPOSE 5000
-CMD [ "npm", "start" ]
+CMD [ "yarn", "start" ]
