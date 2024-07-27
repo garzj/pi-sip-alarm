@@ -3,7 +3,7 @@ import socketIOClient from 'socket.io-client';
 
 const secure = window.location.protocol.includes('https');
 const wsProtocol = `ws${secure ? 's' : ''}`;
-const socket = socketIOClient(`${wsProtocol}://127.0.0.1:5000`, {
+const socket = socketIOClient(`${wsProtocol}://${window.location.host}`, {
   path: '/api',
   transports: ['websocket'],
   closeOnBeforeunload: false,
