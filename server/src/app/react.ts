@@ -1,11 +1,12 @@
 import * as express from 'express';
 import { existsSync } from 'fs';
 import { exists, reactBuildPath, reactIndexPath } from '../config/paths';
+import { env } from '../config/env';
 
 export const reactRouter = express.Router();
 
 // Check react app existance
-if (process.env.NODE_ENV !== 'development' && !existsSync(reactBuildPath)) {
+if (env.NODE_ENV !== 'development' && !existsSync(reactBuildPath)) {
   console.log(`The path to the react app could not be resolved:
     ${reactBuildPath}
 

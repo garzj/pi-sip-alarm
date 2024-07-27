@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, rmSync } from 'fs';
 import { access } from 'fs/promises';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { env } from './env';
 
 export const exists = (file: string) =>
   access(file, F_OK)
@@ -18,7 +19,7 @@ function ensureDirSync(dir: string) {
 const fileDir = dirname(fileURLToPath(import.meta.url));
 
 export const rootDir =
-  process.env.NODE_ENV === 'production'
+  env.NODE_ENV === 'production'
     ? join(fileDir, '../../../..')
     : join(fileDir, '../../..');
 

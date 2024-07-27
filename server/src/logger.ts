@@ -1,6 +1,7 @@
 import { createWriteStream, WriteStream } from 'fs';
 import { TypedEmitter } from 'tiny-typed-emitter';
 import { logFilePath } from './config/paths';
+import { env } from './config/env';
 
 interface Events {
   log: (line: string) => void;
@@ -14,7 +15,7 @@ class Logger extends TypedEmitter<Events> {
   constructor(logFilePath: string) {
     super();
 
-    if (process.env.NODE_ENV === 'production') {
+    if (env.NODE_ENV === 'production') {
       // Log file in prod
       this.stream = createWriteStream(logFilePath);
     }

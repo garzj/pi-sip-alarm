@@ -3,6 +3,7 @@ import { createServer } from 'http';
 import { NetworkInterfaceInfo, networkInterfaces } from 'os';
 import { reactRouter } from './react';
 import { findPort } from '../sip/find-port';
+import { env } from '../config/env';
 
 export const app = express();
 
@@ -23,15 +24,12 @@ hostAddresses.push('localhost');
 // Find a port
 let prefPort: number | null = null;
 
-if (process.env.NODE_ENV === 'development') {
+if (env.NODE_ENV === 'development') {
   prefPort = 5000;
 }
 
-if (
-  process.env.PORT !== undefined &&
-  Number.isInteger(parseInt(process.env.PORT))
-) {
-  prefPort = parseInt(process.env.PORT);
+if (env.PORT !== undefined && Number.isInteger(parseInt(env.PORT))) {
+  prefPort = parseInt(env.PORT);
 
   if (prefPort < 0 || prefPort > 65535) {
     prefPort = null;
@@ -40,7 +38,7 @@ if (
 
 if (prefPort === null) {
   console.error(
-    `The specified port has to be an integer between 0 and 65535. Found: ${process.env.PORT}`
+    `The specified port has to be an integer between 0 and 65535. Found: ${env.PORT}`
   );
 } else {
   findPort(prefPort).then((port) => {
