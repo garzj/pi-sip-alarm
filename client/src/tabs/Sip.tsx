@@ -1,12 +1,12 @@
-import { socketEmit, useSocketLoader, useSocketOn } from '@/bin/socket';
-import { SipData } from '@shared/schema/config-file';
 import React, { useMemo } from 'react';
 import equal from 'fast-deep-equal';
-import { Prompt } from 'react-router-dom';
 import { useState } from 'react';
 import { useCallback } from 'react';
 import './Sip.css';
-import { usePreventUnload } from '@/bin/prevent-unload';
+import { SipData } from '../../../shared/schema/config-file';
+import { usePreventUnload } from '../bin/prevent-unload';
+import { socketEmit, useSocketLoader, useSocketOn } from '../bin/socket';
+import { DirtyFlagWarning } from './DirtyFlagWarning';
 
 export const Sip: React.FC = () => {
   const [sip, setSip] = useState<SipData | null>(null);
@@ -80,14 +80,7 @@ export const Sip: React.FC = () => {
       <div className='big-tab sip'>
         {sip !== null ? (
           <>
-            <Prompt
-              when={dirtyFlag}
-              message={(params) =>
-                params.pathname === '/'
-                  ? true
-                  : 'You have unsaved changes, are you sure you want to leave?'
-              }
-            />
+            <DirtyFlagWarning dirtyFlag={dirtyFlag} path='/' />
 
             <label htmlFor='proxy'>Proxy</label>
             <input

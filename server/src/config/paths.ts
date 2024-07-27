@@ -1,7 +1,8 @@
 import { F_OK } from 'constants';
 import { existsSync, mkdirSync, rmSync } from 'fs';
 import { access } from 'fs/promises';
-import { join, resolve } from 'path';
+import { dirname, join, resolve } from 'path';
+import { fileURLToPath } from 'url';
 
 export const exists = (file: string) =>
   access(file, F_OK)
@@ -16,8 +17,8 @@ function ensureDirSync(dir: string) {
 
 export const rootDir =
   process.env.NODE_ENV === 'production'
-    ? join(__dirname, '../../../../..')
-    : join(__dirname, '../../..');
+    ? process.cwd()
+    : join(dirname(fileURLToPath(import.meta.url)), '../../..');
 
 export const pjcallBinPath = join(rootDir, 'pjcall/pjcall');
 

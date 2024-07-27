@@ -3,17 +3,24 @@
   "version": "1.0.0",
   "private": true,
   "description": "Raspberry PI Service configurable to call and alarm people, when certain pins on the PI are activated",
-  "author": "Johannes Garz <jojogarz123@gmail.com> (https://www.garz.tech/)",
+  "author": "Johannes Garz <johannes@garz.dev> (https://garz.dev/)",
   "license": "UNLICENSED",
+  "type": "module",
+  "workspaces": [
+    "server",
+    "client"
+  ],
   "scripts": {
-    "install-all": "npm i && cd client && npm i && cd ../server && npm i",
-    "dev": "cd pjcall && make && cd .. && npx concurrently -k \"cd client && npm start\" \"cd server && npm run dev\"",
-    "build": "cd pjcall && make && cd ../client && npm run build && cd ../server && npm run build",
-    "start": "cd server && npm start",
-    "deploy": "npm run build && npm start"
+    "clean": "rimraf build",
+    "build:pjcall": "cd pjcall && make",
+    "dev": "yarn build:pjcall && concurrently -k --prefix \"[{name}]\" --names \"SERVER,CLIENT\" -c \"bgBlue.bold,bgGreen.bold\" \"cd server && yarn dev\" \"cd client && yarn dev\"",
+    "build": "cd pjcall && make && cd ../client && yarn build && cd ../server && yarn build",
+    "start": "cd server && yarn start",
+    "deploy": "yarn build && yarn start"
   },
   "devDependencies": {
-    "concurrently": "^6.2.0"
+    "concurrently": "^6.2.0",
+    "rimraf": "^6.0.1"
   },
   "dependencies": {
     "fast-deep-equal": "^3.1.3",

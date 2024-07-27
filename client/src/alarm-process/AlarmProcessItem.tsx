@@ -1,9 +1,12 @@
-import { ProcessItem, procItemSchemas } from '@shared/schema/alarm-process';
 import { ReactElement } from 'react';
 import { AlarmProcessInputs } from './inputs/AlarmProcessInput';
 import { CallInputs } from './inputs/CallInputs';
 import { JumpToInputs } from './inputs/JumpToInputs';
 import { SleepInputs } from './inputs/SleepInputs';
+import {
+  ProcessItem,
+  procItemSchemas,
+} from '../../../shared/schema/alarm-process';
 
 interface Props {
   item: ProcessItem;

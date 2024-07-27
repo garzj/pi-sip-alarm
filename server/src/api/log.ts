@@ -1,6 +1,6 @@
 import { ProvideAPI } from '.';
-import { logger } from '@/logger';
-import { logFilePath } from '@/config/paths';
+import { logFilePath } from '../config/paths';
+import { logger } from '../logger';
 
 export const provideLogApi: ProvideAPI = (io) => {
   io.on('connection', (socket) => {

@@ -1,4 +1,4 @@
-import * as getPort from 'get-port';
+import getPort from 'get-port';
 
 export async function findPort(preferred?: number) {
   const port = await getPort(

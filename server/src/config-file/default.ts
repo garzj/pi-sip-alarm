@@ -1,4 +1,4 @@
-import { ConfigData } from '@shared/schema/config-file';
+import { ConfigData } from '../../../shared/schema/config-file';
 
 export const defaultConfig: ConfigData = {
   sip: {

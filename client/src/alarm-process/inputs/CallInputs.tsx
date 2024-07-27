@@ -1,5 +1,8 @@
-import { IntegerInput } from '@/input/IntegerInput';
-import { audioSchemas, ProcessAudio } from '@shared/schema/alarm-process';
+import {
+  audioSchemas,
+  ProcessAudio,
+} from '../../../../shared/schema/alarm-process';
+import { IntegerInput } from '../../input/IntegerInput';
 import { AlarmProcessInputs } from './AlarmProcessInput';
 
 export const CallInputs: AlarmProcessInputs<'call' | 'callElse'> = ({

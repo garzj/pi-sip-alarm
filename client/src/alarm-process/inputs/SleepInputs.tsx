@@ -1,4 +1,4 @@
-import { IntegerInput } from '@/input/IntegerInput';
+import { IntegerInput } from '../../input/IntegerInput';
 import { AlarmProcessInputs } from './AlarmProcessInput';
 
 export const SleepInputs: AlarmProcessInputs<'sleep'> = ({

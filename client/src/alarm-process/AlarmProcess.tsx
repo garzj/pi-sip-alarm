@@ -1,5 +1,8 @@
-import { ProcessItem, procItemSchemas } from '@shared/schema/alarm-process';
-import { AlarmData } from '@shared/schema/config-file';
+import {
+  ProcessItem,
+  procItemSchemas,
+} from '../../../shared/schema/alarm-process';
+import { AlarmData } from '../../../shared/schema/config-file';
 import './AlarmProcess.css';
 import { AlarmProcessItem } from './AlarmProcessItem';
 

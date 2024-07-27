@@ -1,9 +1,9 @@
-import { socketEmit, useSocketLoader, useSocketOn } from '@/bin/socket';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 import { useCallback } from 'react';
 import { useState } from 'react';
 import './Logs.css';
+import { socketEmit, useSocketLoader, useSocketOn } from '../bin/socket';
 
 export const Logs: React.FC = () => {
   const [logFilePath, setLogFilePath] = useState('/dev/null');

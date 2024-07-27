@@ -1,13 +1,14 @@
 {
   "name": "pi-sip-alarm-server",
+  "version": "1.0.0",
   "private": true,
   "main": "./src/index.ts",
+  "type": "module",
   "scripts": {
-    "dev": "export NODE_ENV=development || set NODE_ENV=development&& npx ts-node-dev --respawn --rs  --poll --exit-child --no-deps -C ttypescript ./src/index.ts",
-    "build": "ttsc -p .",
-    "start": "node ./build/server/src/index.js",
-    "deploy": "npm run build && npm start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "dotenv -e ../.env -v NODE_ENV=development tsx watch --clear-screen=false ./src/index.ts",
+    "build": "tsc && tsc-alias",
+    "start": "node ../build/server/src/index.js",
+    "deploy": "yarn build && yarn start"
   },
   "dependencies": {
     "chokidar": "^3.5.2",
@@ -24,9 +25,8 @@
     "@types/express": "^4.17.13",
     "@types/node": "^15.6.0",
     "@types/uuid": "^8.3.1",
-    "ts-node-dev": "^1.1.8",
-    "ts-transform-paths": "^2.0.3",
-    "ttypescript": "^1.5.12",
+    "dotenv-cli": "^7.4.2",
+    "tsc-alias": "^1.8.10",
     "typescript": "^4.2.4"
   }
 }

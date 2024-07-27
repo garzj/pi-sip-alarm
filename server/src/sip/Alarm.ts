@@ -1,13 +1,13 @@
-import { ProcessItem } from '@shared/schema/alarm-process';
-import { AlarmData } from '@shared/schema/config-file';
 import { BinaryValue, Gpio } from 'onoff';
 import { CallData, PjcallRunner } from './PjcallRunner';
 import { v4 as uuidv4 } from 'uuid';
 import { join, normalize } from 'path';
-import { audioPath, tmpPath } from '@/config/paths';
-import * as text2wav from 'text2wav';
+import text2wav from 'text2wav';
 import { unlink, writeFile } from 'fs/promises';
-import { configFile } from '@/config-file';
+import { AlarmData } from '../../../shared/schema/config-file';
+import { audioPath, tmpPath } from '../config/paths';
+import { ProcessItem } from '../../../shared/schema/alarm-process';
+import { configFile } from '../config-file';
 const { HIGH } = Gpio;
 
 export class Alarm {

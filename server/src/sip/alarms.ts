@@ -1,7 +1,7 @@
 import { Alarm } from './Alarm';
-import { configFile } from '@/config-file';
-import equal = require('fast-deep-equal');
+import equal from 'fast-deep-equal';
 import { Gpio } from 'onoff';
+import { configFile } from '../config-file';
 
 if (!Gpio.accessible) {
   console.error(`Could not access your GPIO device:

@@ -1,24 +1,31 @@
 {
   "compilerOptions": {
     "rootDir": "..",
-    "outDir": "build",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "target": "es2015",
-    "lib": ["es6"],
-    "types": ["node"],
-    "typeRoots": ["node_modules/@types"],
-    "resolveJsonModule": true,
-    "noImplicitAny": true,
+    "target": "ESNext",
+    "sourceMap": true,
+    "module": "ESNext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
     "strict": true,
+    "resolveJsonModule": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": false,
+    "noImplicitAny": true,
     "noFallthroughCasesInSwitch": true,
-    "plugins": [{ "transform": "ts-transform-paths" }],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@shared/*": ["../shared/*"]
-    }
+    "skipLibCheck": true,
+    "outDir": "../build",
+    "lib": ["DOM", "ESNext"],
+    "moduleResolution": "node",
+    "types": ["node"],
+    "incremental": true,
+    "composite": true
   },
-  "include": ["./src/**/*", "../shared/**/*"],
-  "exclude": ["node_modules", "build"]
+  "tsc-alias": {
+    "resolveFullPaths": true
+  },
+  "include": ["**/*.ts", "../shared/**/*.ts"],
+  "exclude": ["**/*.test.ts", "../shared/**/*.test.ts"]
 }

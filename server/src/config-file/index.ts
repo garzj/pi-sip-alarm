@@ -3,9 +3,9 @@ import { readFileSync } from 'fs';
 import { readFile, writeFile } from 'fs/promises';
 import { TypedEmitter } from 'tiny-typed-emitter';
 import { defaultConfig } from './default';
-import { configSchema, ConfigData } from '@shared/schema/config-file';
 import { ZodError } from 'zod';
 import { watch } from 'chokidar';
+import { ConfigData, configSchema } from '../../../shared/schema/config-file';
 
 interface Events {
   change: () => void;

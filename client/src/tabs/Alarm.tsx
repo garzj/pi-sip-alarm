@@ -1,11 +1,11 @@
-import { usePreventUnload } from '@/bin/prevent-unload';
-import { socketEmit, useSocketLoader } from '@/bin/socket';
-import { IntegerInput } from '@/input/IntegerInput';
-import { AlarmData } from '@shared/schema/config-file';
 import equal from 'fast-deep-equal';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Prompt } from 'react-router-dom';
 import { AlarmProcess } from '../alarm-process/AlarmProcess';
+import { AlarmData } from '../../../shared/schema/config-file';
+import { socketEmit, useSocketLoader } from '../bin/socket';
+import { usePreventUnload } from '../bin/prevent-unload';
+import { IntegerInput } from '../input/IntegerInput';
+import { DirtyFlagWarning } from './DirtyFlagWarning';
 
 interface Props {
   id: string;
@@ -70,14 +70,7 @@ export const Alarm: React.FC<Props> = ({ id }) => {
       <div className='big-tab alarm'>
         {alarm !== null ? (
           <>
-            <Prompt
-              when={dirtyFlag}
-              message={(params) =>
-                params.pathname === `/alarms/${id}`
-                  ? true
-                  : 'You have unsaved changes, are you sure you want to leave?'
-              }
-            />
+            <DirtyFlagWarning dirtyFlag={dirtyFlag} path={`/alarms/${id}`} />
 
             <label htmlFor='name'>Name</label>
             <input

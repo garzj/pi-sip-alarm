@@ -1,8 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ProvideAPI } from '.';
-import { configFile } from '@/config-file';
-import { AlarmData, AlarmNames, alarmSchema } from '@shared/schema/config-file';
-import equal = require('fast-deep-equal');
+import equal from 'fast-deep-equal';
+import {
+  AlarmData,
+  AlarmNames,
+  alarmSchema,
+} from '../../../shared/schema/config-file';
+import { configFile } from '../config-file';
 
 export const provideAlarmsApi: ProvideAPI = (io) => {
   function getAlarmNames() {

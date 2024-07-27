@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
 import './Alarms.css';
-import { socketEmit, useSocketLoader, useSocketOn } from '@/bin/socket';
-import { AlarmNames } from '@shared/schema/config-file';
 import { Alarm } from './Alarm';
 import { NavLink, useLocation } from 'react-router-dom';
+import { AlarmNames } from '../../../shared/schema/config-file';
+import { socketEmit, useSocketLoader, useSocketOn } from '../bin/socket';
 
 export const Alarms: React.FC = () => {
   const [alarmNames, setAlarmNames] = useState<AlarmNames>({});
@@ -28,9 +28,9 @@ export const Alarms: React.FC = () => {
           {Object.entries(alarmNames).map(([alarmId, alarmName]) => (
             <li key={alarmId}>
               <NavLink
-                exact={true}
-                className='alarm-name'
-                activeClassName='-active'
+                className={(isActive) =>
+                  'alarm-name' + (isActive ? '-active' : '')
+                }
                 to={`/alarms/${alarmId}`}
               >
                 {alarmName}

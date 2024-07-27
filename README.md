@@ -24,6 +24,6 @@ Raspberry PI Service configurable to call and alarm people, when certain pins on
 - Install CMake  
   `sudo apt install -y build-essentials`
 - Install [Pjsua](https://www.pjsip.org/)
-- Install [NodeJS + npm](https://nodejs.org/en/)
-- Build the app: `npm run build`
-- Start the app: `npm start`
+- Install [NodeJS](https://nodejs.org/en/) and [yarn](https://classic.yarnpkg.com/lang/en/docs/install/)
+- Build the app: `yarn build`
+- Start the app: `yarn start`

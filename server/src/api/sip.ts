@@ -1,8 +1,8 @@
-import { SipData, sipSchema } from '@shared/schema/config-file';
-import { configFile } from '@/config-file';
-import * as equal from 'fast-deep-equal';
+import equal from 'fast-deep-equal';
 import { ProvideAPI } from '.';
-import { PjcallRunner } from '@/sip/PjcallRunner';
+import { SipData, sipSchema } from '../../../shared/schema/config-file';
+import { configFile } from '../config-file';
+import { PjcallRunner } from '../sip/PjcallRunner';
 
 export const provideSipApi: ProvideAPI = (io) => {
   io.on('connection', (socket) => {
