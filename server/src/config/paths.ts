@@ -1,7 +1,7 @@
 import { F_OK } from 'constants';
 import { existsSync, mkdirSync, rmSync } from 'fs';
 import { access } from 'fs/promises';
-import { dirname, join, resolve } from 'path';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 export const exists = (file: string) =>
@@ -15,10 +15,12 @@ function ensureDirSync(dir: string) {
   }
 }
 
+const fileDir = dirname(fileURLToPath(import.meta.url));
+
 export const rootDir =
   process.env.NODE_ENV === 'production'
-    ? process.cwd()
-    : join(dirname(fileURLToPath(import.meta.url)), '../../..');
+    ? join(fileDir, '../../../..')
+    : join(fileDir, '../../..');
 
 export const pjcallBinPath = join(rootDir, 'pjcall/pjcall');
 
@@ -36,5 +38,5 @@ export const configFilePath = join(dataPath, 'config.json');
 
 export const logFilePath = join(dataPath, 'log.txt');
 
-export const reactBuildPath = join(rootDir, 'client/build');
+export const reactBuildPath = join(rootDir, 'build/client');
 export const reactIndexPath = join(reactBuildPath, 'index.html');
