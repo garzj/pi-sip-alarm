@@ -5,7 +5,14 @@ This part of the pi-sip-alarm project is a c wrapper of the pjsua api, providing
 ## Build and start
 
 - Download and install [pjsua](https://www.pjsip.org/)
-- Build the app with `make`
+  - On Fedora:
+    - `sudo dnf groupinstall "Development Tools" "Development Libraries"`
+    - `sudo dnf install gcc-c++ SDL2-devel libv4l gsm-devel speex-devel speexdsp-devel`
+    - `git clone https://github.com/pjsip/pjproject.git`
+    - `cd pjproject`
+    - `./configure && make dep && make clean`
+    - `make && sudo make install`
+- Build this app with `make`
 - Start it with `./pjcall`
 
 ## Spec
