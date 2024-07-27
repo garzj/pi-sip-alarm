@@ -28,7 +28,7 @@ export const Alarms: React.FC = () => {
           {Object.entries(alarmNames).map(([alarmId, alarmName]) => (
             <li key={alarmId}>
               <NavLink
-                className={(isActive) =>
+                className={({ isActive }) =>
                   'alarm-name' + (isActive ? '-active' : '')
                 }
                 to={`/alarms/${alarmId}`}
