@@ -161,37 +161,36 @@ export class PjcallRunner {
     // Clear output
     this.output = '';
 
-    return;
-    //   // Spawn pjcall
-    //   this.proc = spawn(pjcallBinPath, { stdio: ['pipe', 'pipe', 'pipe'] });
+    // Spawn pjcall
+    this.proc = spawn(pjcallBinPath, { stdio: ['pipe', 'pipe', 'pipe'] });
 
-    //   // Attach to output
-    //   if (!this.proc.stdout || !this.proc.stderr || !this.proc.stdin) {
-    //     return console.error(`Couln't attach to the stdio of the pjcall client.`);
-    //   }
-    //   this.proc.stdout.on('data', (data) => this.onData(`${data}`));
-    //   this.proc.stderr.on('data', (data) => this.onData(`${data}`));
+    // Attach to output
+    if (!this.proc.stdout || !this.proc.stderr || !this.proc.stdin) {
+      return console.error(`Couln't attach to the stdio of the pjcall client.`);
+    }
+    this.proc.stdout.on('data', (data) => this.onData(`${data}`));
+    this.proc.stderr.on('data', (data) => this.onData(`${data}`));
 
-    //   // Handle unexpected exits -> restart
-    //   this.pjcallExitHandler = () => {
-    //     console.error(
-    //       `${this.output}The pjcall process closed unexpectedly. There is likely additional output above.`
-    //     );
+    // Handle unexpected exits -> restart
+    this.pjcallExitHandler = () => {
+      console.error(
+        `${this.output}The pjcall process closed unexpectedly. There is likely additional output above.`
+      );
 
-    //     if (this.restarted >= PjcallRunner.maxRestarts) {
-    //       this.terminate();
-    //       return console.error(
-    //         `Already reached a maximum of ${PjcallRunner.maxRestarts} restarts. Terminating...`
-    //       );
-    //     }
+      if (this.restarted >= PjcallRunner.maxRestarts) {
+        this.terminate();
+        return console.error(
+          `Already reached a maximum of ${PjcallRunner.maxRestarts} restarts. Terminating...`
+        );
+      }
 
-    //     this.restarted++;
-    //     console.error(
-    //       `Restarting... (${this.restarted}/${PjcallRunner.maxRestarts})`
-    //     );
-    //     this.run();
-    //   };
-    //   this.proc.on('exit', this.pjcallExitHandler);
+      this.restarted++;
+      console.error(
+        `Restarting... (${this.restarted}/${PjcallRunner.maxRestarts})`
+      );
+      this.run();
+    };
+    this.proc.on('exit', this.pjcallExitHandler);
   }
 
   terminate() {
