@@ -32,7 +32,7 @@ RUN cd server && yarn build
 FROM node:lts-alpine3.20
 
 # Runtime deps
-RUN apk add --update libc6-compat libuuid pjproject-dev
+RUN apk add --update pjproject-dev libuuid sdl2
 
 WORKDIR /app/
 
