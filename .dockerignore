@@ -3,6 +3,7 @@
 
 # Build
 **/build/
+pjcall/pjcall
 
 # Env files
 **/.env
