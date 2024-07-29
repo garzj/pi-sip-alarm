@@ -8,3 +8,8 @@ run:
 
 dev:
 	make pjcall run
+
+clean:
+	rm -f pjcall
+
+.PHONY: all clean
